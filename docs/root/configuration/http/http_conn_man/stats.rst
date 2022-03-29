@@ -42,6 +42,7 @@ statistics:
    downstream_flow_control_paused_reading_total, Counter, Total number of times reads were disabled due to flow control
    downstream_flow_control_resumed_reading_total, Counter, Total number of times reads were enabled on the connection due to flow control
    downstream_rq_total, Counter, Total requests
+   downstream_cust_rq_total, Counter, Total custom requests
    downstream_rq_http1_total, Counter, Total HTTP/1.1 requests
    downstream_rq_http2_total, Counter, Total HTTP/2 requests
    downstream_rq_http3_total, Counter, Total HTTP/3 requests

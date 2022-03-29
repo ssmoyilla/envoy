@@ -651,6 +651,7 @@ ConnectionManagerImpl::ActiveStream::ActiveStream(ConnectionManagerImpl& connect
                                connection_manager_.read_callbacks_->connection().dispatcher());
 
   connection_manager_.stats_.named_.downstream_rq_total_.inc();
+  connection_manager_.stats_.named_.downstream_cust_rq_total_.inc();
   connection_manager_.stats_.named_.downstream_rq_active_.inc();
   if (connection_manager_.codec_->protocol() == Protocol::Http2) {
     connection_manager_.stats_.named_.downstream_rq_http2_total_.inc();
