@@ -164,12 +164,16 @@ TEST_P(ProxyFilterIntegrationTest, RequestWithBody) {
       sendRequestAndWaitForResponse(request_headers, 1024, default_response_headers_, 1024);
   checkSimpleRequestSuccess(1024, 1024, response.get());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_attempt")->value());
+  //Custom stat
+  EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_cust_attempt")->value());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.host_added")->value());
 
   // Now send another request. This should hit the DNS cache.
   response = sendRequestAndWaitForResponse(request_headers, 512, default_response_headers_, 512);
   checkSimpleRequestSuccess(512, 512, response.get());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_attempt")->value());
+  //Custom stat
+  EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_cust_attempt")->value());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.host_added")->value());
 }
 
@@ -189,6 +193,8 @@ TEST_P(ProxyFilterIntegrationTest, ReloadClusterAndAttachToCache) {
       sendRequestAndWaitForResponse(request_headers, 1024, default_response_headers_, 1024);
   checkSimpleRequestSuccess(1024, 1024, response.get());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_attempt")->value());
+  //Custom stat
+  EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_cust_attempt")->value());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.host_added")->value());
 
   // Cause a cluster reload via CDS.
@@ -207,6 +213,8 @@ TEST_P(ProxyFilterIntegrationTest, ReloadClusterAndAttachToCache) {
   response = sendRequestAndWaitForResponse(request_headers, 512, default_response_headers_, 512);
   checkSimpleRequestSuccess(512, 512, response.get());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_attempt")->value());
+  //Custom stat
+  EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_cust_attempt")->value());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.host_added")->value());
 }
 
@@ -225,6 +233,8 @@ TEST_P(ProxyFilterIntegrationTest, RemoveHostViaTTL) {
       sendRequestAndWaitForResponse(request_headers, 1024, default_response_headers_, 1024);
   checkSimpleRequestSuccess(1024, 1024, response.get());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_attempt")->value());
+  //Custom stat
+  EXPECT_EQ(1, test_server_->counter("dns_cache.foo.dns_query_cust_attempt")->value());
   EXPECT_EQ(1, test_server_->counter("dns_cache.foo.host_added")->value());
   EXPECT_EQ(1, test_server_->gauge("dns_cache.foo.num_hosts")->value());
   cleanupUpstreamAndDownstream();
