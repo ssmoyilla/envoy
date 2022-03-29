@@ -280,6 +280,7 @@ void DnsCacheImpl::startResolve(const std::string& host, PrimaryHostInfo& host_i
   ASSERT(host_info.active_query_ == nullptr);
 
   stats_.dns_query_attempt_.inc();
+  stats_.dns_query_cust_attempt_.inc(); // Custom Stat
 
   host_info.timeout_timer_->enableTimer(timeout_interval_, nullptr);
   host_info.active_query_ =

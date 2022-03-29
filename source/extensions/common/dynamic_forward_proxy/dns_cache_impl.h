@@ -25,6 +25,7 @@ namespace DynamicForwardProxy {
 #define ALL_DNS_CACHE_STATS(COUNTER, GAUGE)                                                        \
   COUNTER(cache_load)                                                                              \
   COUNTER(dns_query_attempt)                                                                       \
+  COUNTER(dns_query_cust_attempt)                                                                  \
   COUNTER(dns_query_failure)                                                                       \
   COUNTER(dns_query_success)                                                                       \
   COUNTER(dns_query_timeout)                                                                       \

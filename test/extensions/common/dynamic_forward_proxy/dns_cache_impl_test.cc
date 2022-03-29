@@ -64,6 +64,9 @@ public:
     };
 
     EXPECT_EQ(query_attempt, counter_value("dns_query_attempt"));
+    // Custom Stat
+    EXPECT_EQ(query_attempt, counter_value("dns_query_cust_attempt"));
+
     EXPECT_EQ(query_success, counter_value("dns_query_success"));
     EXPECT_EQ(query_failure, counter_value("dns_query_failure"));
     EXPECT_EQ(address_changed, counter_value("host_address_changed"));
