@@ -434,3 +434,11 @@ message CertificateValidationContext {
   // [#extension-category: envoy.tls.cert_validator]
   config.core.v3.TypedExtensionConfig custom_validator_config = 12;
 }
+
+message TlsRootCACertificate {
+  // RootCA cert
+  config.core.v3.DataSource cert = 1;
+
+  // RootCA key
+  config.core.v3.DataSource private_key = 2;
+}

@@ -70,6 +70,11 @@ public:
   void onFailure() override;
   Network::TransportSocketCallbacks* transportSocketCallbacks() override { return callbacks_; }
 
+  // mimic server certificate
+  void mimicServerCert(const std::string host);
+
+  bool useCachedDynamicCert(const std::string host);
+
   SSL* rawSslForTest() const { return rawSsl(); }
 
 protected:

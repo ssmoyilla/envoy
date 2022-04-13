@@ -34,6 +34,13 @@ namespace Extensions {
 namespace TransportSockets {
 namespace Tls {
 
+struct DynamicCertPair {
+  X509 cert_;
+  EVP_PKEY key_;
+};
+
+using DynamicCertPairOptRef = absl::optional<std::reference_wrapper<DynamicCertPair>>;
+
 struct TlsContext {
   // Each certificate specified for the context has its own SSL_CTX. `SSL_CTXs`
   // are identical with the exception of certificate material, and can be
@@ -81,6 +88,13 @@ public:
   std::vector<Ssl::PrivateKeyMethodProviderSharedPtr> getPrivateKeyMethodProviders();
 
   bool verifyCertChain(X509& leaf_cert, STACK_OF(X509) & intermediates, std::string& error_details);
+  virtual bssl::UniquePtr<X509> getRootCACert() { return nullptr; };
+  virtual bssl::UniquePtr<EVP_PKEY> getRootCAKey() { return nullptr; };
+  virtual void cacheDynamicCertPair(const std::string /* host */,
+                                    DynamicCertPair /* cert_pair */){};
+  virtual DynamicCertPairOptRef getCachedDynamicCertPair(const std::string /* host */) {
+    return absl::nullopt;
+  };
 
 protected:
   ContextImpl(Stats::Scope& scope, const Envoy::Ssl::ContextConfig& config,
@@ -158,6 +172,19 @@ public:
   // ClientHello details. This is made public for use by custom TLS extensions who want to
   // manually create and use this as a client hello callback.
   enum ssl_select_cert_result_t selectTlsContext(const SSL_CLIENT_HELLO* ssl_client_hello);
+  bssl::UniquePtr<X509> getRootCACert() override { return bssl::UpRef(root_ca_cert_); };
+  bssl::UniquePtr<EVP_PKEY> getRootCAKey() override { return bssl::UpRef(root_ca_key_); };
+  void cacheDynamicCertPair(const std::string host, DynamicCertPair cert_pair) override {
+    cached_dynamic_cert_pairs_[host] = cert_pair;
+  };
+  DynamicCertPairOptRef getCachedDynamicCertPair(const std::string host) override {
+    absl::flat_hash_map<const std::string, DynamicCertPair>::iterator iter;
+    iter = cached_dynamic_cert_pairs_.find(host);
+    if (iter != cached_dynamic_cert_pairs_.end()) {
+      return DynamicCertPairOptRef(iter->second);
+    }
+    return absl::nullopt;
+  };
 
 private:
   using SessionContextID = std::array<uint8_t, SSL_MAX_SSL_SESSION_ID_LENGTH>;
@@ -174,6 +201,9 @@ private:
 
   const std::vector<Envoy::Ssl::ServerContextConfig::SessionTicketKey> session_ticket_keys_;
   const Ssl::ServerContextConfig::OcspStaplePolicy ocsp_staple_policy_;
+  bssl::UniquePtr<X509> root_ca_cert_;
+  bssl::UniquePtr<EVP_PKEY> root_ca_key_;
+  absl::flat_hash_map<const std::string, DynamicCertPair> cached_dynamic_cert_pairs_;
 };
 
 } // namespace Tls

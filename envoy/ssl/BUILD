@@ -31,6 +31,7 @@ envoy_cc_library(
         ":certificate_validation_context_config_interface",
         ":handshaker_interface",
         ":tls_certificate_config_interface",
+        ":tls_root_ca_certificate_config_interface",
     ],
 )
 
@@ -44,6 +45,11 @@ envoy_cc_library(
         "//envoy/config:typed_config_interface",
         "//envoy/stats:stats_interface",
     ],
+)
+
+envoy_cc_library(
+    name = "tls_root_ca_certificate_config_interface",
+    hdrs = ["tls_root_ca_certificate_config.h"],
 )
 
 envoy_cc_library(

@@ -246,6 +246,12 @@ message CommonTlsContext {
   // [#not-implemented-hide:]
   CertificateProviderPluginInstance tls_certificate_provider_instance = 14;
 
+  // RootCA certificates for generating TLS certs inside Envoy
+  //
+  // Only one of *tls_certificates*, *tls_certificate_sds_secret_configs*,
+  // *tls_certificate_provider_instance* and *tls_root_ca_certificate* may be used.
+  TlsRootCACertificate tls_root_ca_certificate = 15;
+
   // Certificate provider for fetching TLS certificates.
   // [#not-implemented-hide:]
   CertificateProvider tls_certificate_certificate_provider = 9
